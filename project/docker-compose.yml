@@ -1,0 +1,28 @@
+version: '3.5'
+services:
+  web:
+    image: nginx:v01
+    volumes:
+      - ~/internship/project/nginx/data:/etc/nginx/templates
+    ports:
+      - "8080:80"
+    environment:
+      - NGINX_HOST=stepav.com
+      - NGINX_PORT=80
+
+  redis:
+    image: redis:v01
+    volumes: 
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis/tls/redis.crt:/usr/local/etc/redis/tls/redis.crt
+      - ./redis/tls/redis.key:/usr/local/etc/redis/tls/redis.key
+      - ./redis/tls/ca.crt:/usr/local/etc/redis/tls/ca.crt
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: "redis_pass"
+      REDIS_TLS_ENABLED: "yes"
+      REDIS_TLS_CERT_FILE: /usr/local/etc/redis/redis.crt
+      REDIS_TLS_KEY_FILE: /usr/local/etc/redis/redis.key
+      REDIS_TLS_CA_FILE: /usr/local/etc/redis/ca.crt
+    command: redis-server --requirepass redis_pass
